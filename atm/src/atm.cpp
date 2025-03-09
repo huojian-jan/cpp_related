@@ -1,8 +1,6 @@
 
 #include "../include/atm.h"
 
-
-
 int main() {
     init();
     string input;
@@ -22,14 +20,6 @@ int main() {
 
 void init_lang_res() {
     lang_res.clear();
-
-    lang_res.insert(pair<string,vector<string>>(Greet,vector<string>()));
-    lang_res.insert(pair<string,vector<string>>(One_Operation,vector<string>()));
-    lang_res.insert(pair<string,vector<string>>(Two_Operation,vector<string>()));
-    lang_res.insert(pair<string,vector<string>>(Three_Operation,vector<string>()));
-    lang_res.insert(pair<string,vector<string>>(Four_Operation,vector<string>()));
-    lang_res.insert(pair<string,vector<string>>(Exit_Operation,vector<string>()));
-
     lang_res[Greet].emplace_back("欢迎来到大佐银行\n");
     lang_res[Greet].emplace_back("Welcome to DaZuo Bank\n");
 
@@ -64,9 +54,61 @@ string & get_lang_str(const string &lang_key) {
 }
 
 void main_menu() {
-    for (const auto &item: lang_res) {
-        cout << get_lang_str(item.first);
+    cout<<lang_res[Greet][0];
+    cout<<lang_res[One_Operation][0];
+    cout<<lang_res[Two_Operation][0];
+    cout<<lang_res[Three_Operation][0];
+    cout<<lang_res[Four_Operation][0];
+    cout<<lang_res[Exit_Operation][0];
+}
+
+void query_balance() {
+    if(!require_auth_if_need())
+    {
+        throw Auth_Failed;
     }
+    long balance= get_balance_by_id(_user_info->user_id);
+    cout<<"your balance= "<<balance<<endl;
+}
+
+void withdraw(const int &amount) {
+    if(!require_auth_if_need())
+    {
+        throw Auth_Failed;
+    }
+
+    long balance= get_balance_by_id(_user_info->user_id);
+    if(balance<amount)
+    {
+        throw "余额不足";
+    }
+    append_money_by_Id(_user_info->user_id,-amount);
+    balance= get_balance_by_id(_user_info->user_id);
+    cout<<"successfully withdraw"<<amount<<",current balance="<<balance<<endl;
+}
+
+void deposit(const int &amount) {
+    if(!require_auth_if_need())
+    {
+        throw Auth_Failed;
+    }
+
+    long balance= get_balance_by_id(_user_info->user_id);
+    if(balance<amount)
+    {
+        throw "余额不足";
+    }
+    append_money_by_Id(_user_info->user_id,amount);
+    balance= get_balance_by_id(_user_info->user_id);
+    cout<<"successfully deposit"<<amount<<",current balance="<<balance<<endl;
+}
+
+void create_accont() {
+
+}
+
+void quit() {
+    exit(0);
 }
 
 
